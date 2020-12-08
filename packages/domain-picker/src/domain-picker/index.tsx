@@ -16,6 +16,7 @@ import { __ } from '@wordpress/i18n';
  */
 import SuggestionItem from './suggestion-item';
 import SuggestionItemPlaceholder from './suggestion-item-placeholder';
+import DomainIOwn from './domain-i-own-item';
 import { useDomainSuggestions } from '../hooks/use-domain-suggestions';
 import { useDomainAvailabilities } from '../hooks/use-domain-availabilities';
 import DomainCategories from '../domain-categories';
@@ -99,6 +100,9 @@ export interface Props {
 	itemType?: SUGGESTION_ITEM_TYPE;
 
 	locale?: string;
+
+	/** Whether to show the "Already own a domain?" option */
+	useYourDomainLink?: boolean;
 }
 
 const DomainPicker: FunctionComponent< Props > = ( {
@@ -121,6 +125,7 @@ const DomainPicker: FunctionComponent< Props > = ( {
 	itemType = ITEM_TYPE_RADIO,
 	locale,
 	areDependenciesLoading = false,
+	useYourDomainLink = false,
 } ) => {
 	const label = __( 'Search for a domain', __i18n_text_domain__ );
 
@@ -364,6 +369,12 @@ const DomainPicker: FunctionComponent< Props > = ( {
 										<SuggestionItemPlaceholder type={ itemType } key={ i } />
 									) ) }
 							</ItemGrouper>
+							{ existingSubdomain && useYourDomainLink && (
+								<DomainIOwn
+									siteSlug={ existingSubdomain?.domain_name }
+									source={ existingSubdomain?.domain_name }
+								/>
+							) }
 						</>
 
 						{ ! isExpanded &&
