@@ -74,6 +74,7 @@ const DomainDetails: React.FunctionComponent = () => {
 					segregateFreeAndPaid
 					locale={ locale }
 					itemType={ ITEM_TYPE_BUTTON }
+					useYourDomainLink={ true }
 				/>
 			</div>
 		</div>
