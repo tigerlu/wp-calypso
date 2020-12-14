@@ -1533,7 +1533,6 @@ export const PLANS_LIST = {
 		getPlanCompareFeatures: () => [
 			// pay attention to ordering, shared features should align on /plan page
 			constants.FEATURE_P2_13GB_STORAGE,
-			constants.FEATURE_P2_UNLIMITED_FREE_VIEWERS,
 			constants.FEATURE_P2_ADVANCED_SEARCH,
 			constants.FEATURE_P2_VIDEO_SHARING,
 			constants.FEATURE_P2_MORE_FILE_TYPES,
