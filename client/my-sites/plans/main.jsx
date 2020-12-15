@@ -32,9 +32,8 @@ import QuerySitePurchases from 'calypso/components/data/query-site-purchases';
 import { getCurrentPlan } from 'calypso/state/sites/plans/selectors';
 import { PerformanceTrackerStop } from 'calypso/lib/performance-tracking';
 import isSiteWPForTeams from 'calypso/state/selectors/is-site-wpforteams';
-import { getPlan, isWpComPlan } from 'calypso/lib/plans';
+import { getPlan } from 'calypso/lib/plans';
 import getIntervalTypeForTerm from 'calypso/lib/plans/get-interval-type-for-term';
-import { isMonthly } from 'calypso/lib/plans/constants';
 
 class Plans extends React.Component {
 	static propTypes = {
@@ -107,7 +106,6 @@ class Plans extends React.Component {
 			canAccessPlans,
 			customerType,
 			isWPForTeamsSite,
-			hasWpcomMonthlyPlan,
 		} = this.props;
 
 		if ( ! selectedSite || this.isInvalidPlanInterval() ) {
@@ -147,7 +145,6 @@ class Plans extends React.Component {
 										displayJetpackPlans={ displayJetpackPlans }
 										hideFreePlan={ true }
 										customerType={ customerType }
-										isMonthlyPricingTest={ hasWpcomMonthlyPlan }
 										intervalType={ this.props.intervalType }
 										selectedFeature={ this.props.selectedFeature }
 										selectedPlan={ this.props.selectedPlan }
@@ -174,11 +171,9 @@ export default connect( ( state ) => {
 	const jetpackSite = isJetpackSite( state, selectedSiteId );
 	const isSiteAutomatedTransfer = isSiteAutomatedTransferSelector( state, selectedSiteId );
 	const currentPlan = getCurrentPlan( state, selectedSiteId );
-	let currentPlanIntervalType = getIntervalTypeForTerm( getPlan( currentPlan?.productSlug )?.term );
-
-	if ( 'BRL' === currentPlan?.currencyCode ) {
-		currentPlanIntervalType = 'yearly';
-	}
+	const currentPlanIntervalType = getIntervalTypeForTerm(
+		getPlan( currentPlan?.productSlug )?.term
+	);
 
 	return {
 		currentPlanIntervalType,
@@ -187,7 +182,5 @@ export default connect( ( state ) => {
 		displayJetpackPlans: ! isSiteAutomatedTransfer && jetpackSite,
 		canAccessPlans: canCurrentUser( state, getSelectedSiteId( state ), 'manage_options' ),
 		isWPForTeamsSite: isSiteWPForTeams( state, selectedSiteId ),
-		hasWpcomMonthlyPlan:
-			isWpComPlan( currentPlan?.productSlug ) && isMonthly( currentPlan?.productSlug ),
 	};
 } )( localize( withTrackingTool( 'HotJar' )( Plans ) ) );

@@ -48,7 +48,6 @@ function WPLineItem( {
 	onChangePlanLength,
 	isSummary,
 	createUserAndSiteBeforeTransaction,
-	isMonthlyPricingTest,
 } ) {
 	const translate = useTranslate();
 	const hasDomainsInCart = useHasDomainsInCart();
@@ -77,15 +76,6 @@ function WPLineItem( {
 
 	const productSlug = item.wpcom_meta?.product_slug;
 
-	// Unless a user in the monthly pricing test, reset the related monthly plan costs
-	if ( ! isMonthlyPricingTest && item.wpcom_meta ) {
-		item.wpcom_meta = {
-			...item.wpcom_meta,
-			related_monthly_plan_cost_display: '',
-			related_monthly_plan_cost_integer: 0,
-		};
-	}
-
 	/* eslint-disable wpcalypso/jsx-classname-namespace */
 	return (
 		<div
@@ -101,9 +91,9 @@ function WPLineItem( {
 			</span>
 			{ item.sublabel && (
 				<LineItemMeta>
-					<LineItemSublabelAndPrice item={ item } isMonthlyPricingTest={ isMonthlyPricingTest } />
+					<LineItemSublabelAndPrice item={ item } />
 					<DomainDiscountCallout item={ item } />
-					{ isMonthlyPricingTest && <AnnualDiscountCallout item={ item } /> }
+					<AnnualDiscountCallout item={ item } />
 					<DiscountForFirstYearOnly item={ item } />
 				</LineItemMeta>
 			) }
@@ -158,7 +148,6 @@ function WPLineItem( {
 					getItemVariants={ getItemVariants }
 					onChangeItemVariant={ onChangePlanLength }
 					isDisabled={ isDisabled }
-					isMonthlyPricingTest={ isMonthlyPricingTest }
 				/>
 			) }
 		</div>
@@ -182,7 +171,6 @@ WPLineItem.propTypes = {
 	getItemVariants: PropTypes.func,
 	onChangePlanLength: PropTypes.func,
 	createUserAndSiteBeforeTransaction: PropTypes.bool,
-	isMonthlyPricingTest: PropTypes.bool,
 };
 
 function LineItemPrice( { item, isSummary } ) {
@@ -339,7 +327,6 @@ export function WPOrderReviewLineItems( {
 	getItemVariants,
 	onChangePlanLength,
 	createUserAndSiteBeforeTransaction,
-	isMonthlyPricingTest,
 } ) {
 	return (
 		<WPOrderReviewList className={ joinClasses( [ className, 'order-review-line-items' ] ) }>
@@ -364,7 +351,6 @@ export function WPOrderReviewLineItems( {
 								onChangePlanLength={ onChangePlanLength }
 								isSummary={ isSummary }
 								createUserAndSiteBeforeTransaction={ createUserAndSiteBeforeTransaction }
-								isMonthlyPricingTest={ isMonthlyPricingTest }
 							/>
 						</WPOrderReviewListItem>
 					);
@@ -388,7 +374,6 @@ WPOrderReviewLineItems.propTypes = {
 	),
 	getItemVariants: PropTypes.func,
 	onChangePlanLength: PropTypes.func,
-	isMonthlyPricingTest: PropTypes.bool,
 };
 
 const WPOrderReviewList = styled.ul`
@@ -499,25 +484,15 @@ function shouldLineItemBeShownWhenStepInactive( item ) {
 	return ! itemTypesToIgnore.includes( item.type );
 }
 
-function LineItemSublabelAndPrice( { item, isMonthlyPricingTest = false } ) {
+function LineItemSublabelAndPrice( { item } ) {
 	const translate = useTranslate();
 	const isDomainRegistration = item.wpcom_meta?.is_domain_registration;
 	const isDomainMap = item.type === 'domain_map';
 	const isGSuite = isGSuiteOrExtraLicenseProductSlug( item.wpcom_meta?.product_slug );
+	const planSlug = item.wpcom_meta?.product_slug;
 
 	if ( item.type === 'plan' && item.wpcom_meta?.months_per_bill_period > 1 ) {
-		if ( isMonthlyPricingTest ) {
-			return translate( '%(sublabel)s: %(monthlyPrice)s /month × %(monthsPerBillPeriod)s', {
-				args: {
-					sublabel: item.sublabel,
-					monthlyPrice: item.wpcom_meta.item_subtotal_monthly_cost_display,
-					monthsPerBillPeriod: item.wpcom_meta.months_per_bill_period,
-				},
-				comment: 'product type and monthly breakdown of total cost, separated by a colon',
-			} );
-		}
-
-		return translate( '%(sublabel)s: %(monthlyPrice)s per month × %(monthsPerBillPeriod)s', {
+		return translate( '%(sublabel)s: %(monthlyPrice)s /month × %(monthsPerBillPeriod)s', {
 			args: {
 				sublabel: item.sublabel,
 				monthlyPrice: item.wpcom_meta.item_subtotal_monthly_cost_display,
@@ -528,7 +503,7 @@ function LineItemSublabelAndPrice( { item, isMonthlyPricingTest = false } ) {
 	}
 
 	if ( item.type === 'plan' && item.wpcom_meta?.months_per_bill_period === 1 ) {
-		if ( isMonthlyPricingTest ) {
+		if ( isWpComPlan( planSlug ) ) {
 			return translate( 'Monthly subscription' );
 		}
 
