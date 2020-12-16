@@ -378,6 +378,7 @@ class CalypsoifyIframe extends Component<
 			const isExperimental = config.isEnabled( 'gutenboarding/feature-picker' ); // TODO: remove after ETK 2.8.6 is released
 			const isPersistentLaunchButton = config.isEnabled( 'create/persistent-launch-button' ); // TODO: remove after ETK 2.8.6 is released
 			const isFocusedLaunchFlow = config.isEnabled( 'create/focused-launch-flow' );
+			const currentCalypsoUrl = window.location.href;
 
 			ports[ 0 ].postMessage( {
 				isGutenboarding,
@@ -387,6 +388,7 @@ class CalypsoifyIframe extends Component<
 				isExperimental,
 				isPersistentLaunchButton,
 				isFocusedLaunchFlow,
+				currentCalypsoUrl,
 			} );
 		}
 

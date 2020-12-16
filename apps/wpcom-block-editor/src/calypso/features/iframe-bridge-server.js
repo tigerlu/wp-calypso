@@ -766,6 +766,7 @@ function getGutenboardingStatus( calypsoPort ) {
 			isExperimental,
 			isPersistentLaunchButton,
 			isFocusedLaunchFlow,
+			currentCalypsoUrl,
 		} = data;
 		calypsoifyGutenberg.isGutenboarding = isGutenboarding;
 		calypsoifyGutenberg.isSiteUnlaunched = isSiteUnlaunched;
@@ -774,6 +775,7 @@ function getGutenboardingStatus( calypsoPort ) {
 		calypsoifyGutenberg.isExperimental = isExperimental;
 		calypsoifyGutenberg.isPersistentLaunchButton = isPersistentLaunchButton;
 		calypsoifyGutenberg.isFocusedLaunchFlow = isFocusedLaunchFlow;
+		calypsoifyGutenberg.currentCalypsoUrl = currentCalypsoUrl;
 		// Hook necessary if message recieved after editor has loaded.
 		window.wp.hooks.doAction( 'setGutenboardingStatus', isGutenboarding );
 	};

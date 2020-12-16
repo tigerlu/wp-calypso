@@ -7,6 +7,7 @@ import { addQueryArgs } from '@wordpress/url';
 interface LaunchContext {
 	siteId: number;
 	redirectTo: ( url: string ) => void;
+	getCurrentLaunchFlowUrl: () => string | undefined;
 	openCheckout: ( siteId: number, isEcommerce?: boolean ) => void;
 	flow: string;
 }
@@ -16,9 +17,18 @@ const defaultRedirectTo = ( url: string ) => {
 	window.location.href = url;
 };
 
+const defaultCurrentLaunchFlowUrl = (): string | undefined => {
+	try {
+		return window.location.href;
+	} catch ( err ) {
+		return undefined;
+	}
+};
+
 const LaunchContext = React.createContext< LaunchContext >( {
 	siteId: 0,
 	redirectTo: defaultRedirectTo,
+	getCurrentLaunchFlowUrl: defaultCurrentLaunchFlowUrl,
 	openCheckout: ( siteId, isEcommerce ) => {
 		defaultRedirectTo(
 			addQueryArgs( `/checkout/${ siteId }`, {

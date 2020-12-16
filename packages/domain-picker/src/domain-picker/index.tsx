@@ -102,7 +102,7 @@ export interface Props {
 	locale?: string;
 
 	/** Whether to show the "Already own a domain?" option */
-	useYourDomainLink?: boolean;
+	useYourDomainLink?: string | undefined;
 }
 
 const DomainPicker: FunctionComponent< Props > = ( {
@@ -125,7 +125,7 @@ const DomainPicker: FunctionComponent< Props > = ( {
 	itemType = ITEM_TYPE_RADIO,
 	locale,
 	areDependenciesLoading = false,
-	useYourDomainLink = false,
+	useYourDomainLink,
 } ) => {
 	const label = __( 'Search for a domain', __i18n_text_domain__ );
 
@@ -371,7 +371,7 @@ const DomainPicker: FunctionComponent< Props > = ( {
 								{ ! areDependenciesLoading && existingSubdomain && useYourDomainLink && (
 									<DomainIOwn
 										siteSlug={ existingSubdomain?.domain_name }
-										source={ existingSubdomain?.domain_name }
+										source={ useYourDomainLink }
 									/>
 								) }
 							</ItemGrouper>
