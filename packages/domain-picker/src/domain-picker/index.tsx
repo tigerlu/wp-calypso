@@ -380,12 +380,12 @@ const DomainPicker: FunctionComponent< Props > = ( {
 											times( placeholdersCount, ( i ) => (
 												<SuggestionItemPlaceholder type={ itemType } key={ i } />
 											) ) }
-                      { ! areDependenciesLoading && existingSubdomain && useYourDomainLink && (
-                        <DomainIOwn
-                          siteSlug={ existingSubdomain?.domain_name }
-                          source={ useYourDomainLink }
-                        />
-                      ) }
+										{ ! areDependenciesLoading && existingSubdomain && useYourDomainLink && (
+											<DomainIOwn
+												siteSlug={ existingSubdomain?.domain_name }
+												source={ useYourDomainLink }
+											/>
+										) }
 									</ItemGrouper>
 								</Fragment>
 							)
