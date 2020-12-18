@@ -20,7 +20,6 @@ import { useTranslate } from 'i18n-calypso';
  */
 import wp from 'calypso/lib/wp';
 import notices from 'calypso/notices';
-import PaymentMethodForm from 'calypso/me/purchases/components/payment-method-form';
 import HeaderCake from 'calypso/components/header-cake';
 import PageViewTracker from 'calypso/lib/analytics/page-view-tracker';
 import QueryStoredCards from 'calypso/components/data/query-stored-cards';
@@ -47,7 +46,6 @@ import Layout from 'calypso/components/layout';
 import Column from 'calypso/components/layout/column';
 import PaymentMethodSidebar from 'calypso/me/purchases/components/payment-method-sidebar';
 import PaymentMethodLoader from 'calypso/me/purchases/components/payment-method-loader';
-import { isEnabled } from 'calypso/config';
 import { concatTitle } from 'calypso/lib/react-helpers';
 import {
 	useCreateCreditCard,
@@ -91,11 +89,6 @@ function ChangePaymentMethod( props ) {
 		);
 	}
 
-	const recordFormSubmitEvent = () =>
-		void props.recordTracksEvent( 'calypso_purchases_credit_card_form_submit', {
-			product_slug: props.purchase.productSlug,
-		} );
-
 	const successCallback = () => {
 		const { id } = props.purchase;
 		props.clearPurchases();
@@ -109,11 +102,7 @@ function ChangePaymentMethod( props ) {
 				purchaseId={ props.purchaseId }
 			/>
 			<PageViewTracker
-				path={
-					isEnabled( 'purchases/new-payment-methods' )
-						? '/me/purchases/:site/:purchaseId/payment-method/change/:cardId'
-						: '/me/purchases/:site/:purchaseId/payment/change/:cardId'
-				}
+				path={ '/me/purchases/:site/:purchaseId/payment-method/change/:cardId' }
 				title={ concatTitle( titles.purchases, changePaymentMethodTitle ) }
 			/>
 
@@ -123,24 +112,13 @@ function ChangePaymentMethod( props ) {
 
 			<Layout>
 				<Column type="main">
-					{ isEnabled( 'purchases/new-payment-methods' ) ? (
-						<ChangePaymentMethodList
-							currentlyAssignedPaymentMethodId={ currentPaymentMethodId }
-							purchase={ props.purchase }
-							successCallback={ successCallback }
-							siteSlug={ props.siteSlug }
-							apiParams={ { purchaseId: props.purchase.id } }
-						/>
-					) : (
-						<PaymentMethodForm
-							apiParams={ { purchaseId: props.purchase.id } }
-							initialValues={ props.card }
-							purchase={ props.purchase }
-							recordFormSubmitEvent={ recordFormSubmitEvent }
-							siteSlug={ props.siteSlug }
-							successCallback={ successCallback }
-						/>
-					) }
+					<ChangePaymentMethodList
+						currentlyAssignedPaymentMethodId={ currentPaymentMethodId }
+						purchase={ props.purchase }
+						successCallback={ successCallback }
+						siteSlug={ props.siteSlug }
+						apiParams={ { purchaseId: props.purchase.id } }
+					/>
 				</Column>
 				<Column type="sidebar">
 					<PaymentMethodSidebar purchase={ props.purchase } />
@@ -183,13 +161,10 @@ function getCurrentPaymentMethodId( payment ) {
 }
 
 function getChangePaymentMethodTitleCopy( currentPaymentMethodId ) {
-	if ( isEnabled( 'purchases/new-payment-methods' ) ) {
-		if ( [ 'credits', 'none' ].includes( currentPaymentMethodId ) ) {
-			return titles.addPaymentMethod;
-		}
-		return titles.changePaymentMethod;
+	if ( [ 'credits', 'none' ].includes( currentPaymentMethodId ) ) {
+		return titles.addPaymentMethod;
 	}
-	return titles.editCardDetails;
+	return titles.changePaymentMethod;
 }
 
 // We want to preselect the current method if it is in the list, but if not, preselect the first method.
