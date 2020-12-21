@@ -258,6 +258,7 @@ class DomainSearch extends Component {
 								onAddMapping={ this.handleAddMapping }
 								onAddTransfer={ this.handleAddTransfer }
 								cart={ this.props.cart }
+								isCartPendingUpdate={ this.props.shoppingCartManager.isPendingUpdate }
 								offerUnavailableOption
 								selectedSite={ selectedSite }
 								basePath={ this.props.basePath }
