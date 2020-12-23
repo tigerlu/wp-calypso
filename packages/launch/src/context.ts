@@ -8,7 +8,7 @@ interface LaunchContext {
 	siteId: number;
 	redirectTo: ( url: string ) => void;
 	getCurrentLaunchFlowUrl: () => string | undefined;
-	openCheckout: ( siteId: number, isEcommerce?: boolean ) => void;
+	openCheckout: ( siteSlug: string, isEcommerce?: boolean ) => void;
 	flow: string;
 }
 
@@ -29,12 +29,12 @@ const LaunchContext = React.createContext< LaunchContext >( {
 	siteId: 0,
 	redirectTo: defaultRedirectTo,
 	getCurrentLaunchFlowUrl: defaultCurrentLaunchFlowUrl,
-	openCheckout: ( siteId, isEcommerce ) => {
+	openCheckout: ( siteSlug, isEcommerce ) => {
 		defaultRedirectTo(
-			addQueryArgs( `/checkout/${ siteId }`, {
+			addQueryArgs( `/checkout/${ siteSlug }`, {
 				preLaunch: 1,
 				// Redirect to My Home after checkout only if the selected plan is not eCommerce
-				...( ! isEcommerce && { redirect_to: `/home/${ siteId }` } ),
+				...( ! isEcommerce && { redirect_to: `/home/${ siteSlug }` } ),
 			} )
 		);
 	},

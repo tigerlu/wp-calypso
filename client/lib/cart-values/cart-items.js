@@ -23,7 +23,12 @@ import emailValidator from 'email-validator';
 /**
  * Internal dependencies
  */
-import { GSUITE_BASIC_SLUG, GSUITE_EXTRA_LICENSE_SLUG } from 'calypso/lib/gsuite/constants';
+import config from 'calypso/config';
+import {
+	GOOGLE_WORKSPACE_BUSINESS_STARTER_YEARLY,
+	GSUITE_BASIC_SLUG,
+	GSUITE_EXTRA_LICENSE_SLUG,
+} from 'calypso/lib/gsuite/constants';
 import {
 	formatProduct,
 	getDomain,
@@ -53,6 +58,7 @@ import {
 	isUnlimitedThemes,
 	isVideoPress,
 	isConciergeSession,
+	isTrafficGuide,
 	isMonthly,
 } from 'calypso/lib/products-values';
 import sortProducts from 'calypso/lib/products-values/sort';
@@ -547,6 +553,16 @@ export function hasConciergeSession( cart ) {
 }
 
 /**
+ * Determines whether there is a traffic guide item in the specified shopping cart.
+ *
+ * @param {CartValue} cart - cart as `CartValue` object
+ * @returns {boolean} true if there is a traffic guide item, false otherwise
+ */
+export function hasTrafficGuide( cart ) {
+	return some( getAllCartItems( cart ), isTrafficGuide );
+}
+
+/**
  * Returns a bill period of given cartItem
  *
  * @param {object} cartItem - cartItem
@@ -741,7 +757,12 @@ export function getGoogleApps( cart ) {
 }
 
 export function googleApps( properties ) {
-	const productSlug = properties.product_slug || GSUITE_BASIC_SLUG;
+	const productSlug =
+		properties.product_slug ||
+		( config.isEnabled( 'google-workspace-migration' )
+			? GOOGLE_WORKSPACE_BUSINESS_STARTER_YEARLY
+			: GSUITE_BASIC_SLUG );
+
 	const item = domainItem( productSlug, properties.meta ? properties.meta : properties.domain );
 
 	return assign( item, { extra: { google_apps_users: properties.users } } );

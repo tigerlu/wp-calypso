@@ -33,7 +33,7 @@ export const getCurrentLaunchFlowUrl = (): string | undefined => {
 	}
 };
 
-export const openCheckout = ( siteId = window?.currentSiteId, isEcommerce = false ) => {
+export const openCheckout = ( siteSlug: string, isEcommerce = false ): void => {
 	const HOOK_OPEN_CHECKOUT_MODAL = 'a8c.wpcom-block-editor.openCheckoutModal';
 	const isFocusedLaunchFlow = window?.calypsoifyGutenberg?.isFocusedLaunchFlow;
 
@@ -44,9 +44,9 @@ export const openCheckout = ( siteId = window?.currentSiteId, isEcommerce = fals
 	}
 
 	// fallback: redirect to /checkout page
-	const checkoutUrl = addQueryArgs( `/checkout/${ siteId }`, {
+	const checkoutUrl = addQueryArgs( `/checkout/${ siteSlug }`, {
 		// Redirect to My Home after checkout only if the selected plan is not eCommerce
-		...( ! isEcommerce && { redirect_to: `/home/${ siteId }` } ),
+		...( ! isEcommerce && { redirect_to: `/home/${ siteSlug }` } ),
 	} );
 	redirectToWpcomPath( checkoutUrl );
 };
