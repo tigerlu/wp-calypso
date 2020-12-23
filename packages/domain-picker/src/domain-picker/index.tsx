@@ -110,7 +110,8 @@ export interface Props {
 	locale?: string;
 
 	/** Whether to show the "Already own a domain?" option */
-	useYourDomainLink?: string | undefined;
+	onUseYourDomainClick?: () => void;
+
 	/** Whether we show the free .wordpress.com sub-domain first or last */
 	orderSubDomainsLast?: boolean;
 }
@@ -135,7 +136,7 @@ const DomainPicker: FunctionComponent< Props > = ( {
 	itemType = ITEM_TYPE_RADIO,
 	locale,
 	areDependenciesLoading = false,
-	useYourDomainLink,
+	onUseYourDomainClick,
 	orderSubDomainsLast = false,
 } ) => {
 	const { __ } = useI18n();
@@ -380,11 +381,8 @@ const DomainPicker: FunctionComponent< Props > = ( {
 											times( placeholdersCount, ( i ) => (
 												<SuggestionItemPlaceholder type={ itemType } key={ i } />
 											) ) }
-										{ ! areDependenciesLoading && existingSubdomain && useYourDomainLink && (
-											<UseYourDomainItem
-												siteSlug={ existingSubdomain?.domain_name }
-												source={ useYourDomainLink }
-											/>
+										{ ! areDependenciesLoading && existingSubdomain && onUseYourDomainClick && (
+											<UseYourDomainItem onClick={ onUseYourDomainClick } />
 										) }
 									</ItemGrouper>
 								</Fragment>
