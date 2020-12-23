@@ -52,6 +52,7 @@ import { concatTitle } from 'calypso/lib/react-helpers';
 import {
 	useCreateCreditCard,
 	useCreateExistingCards,
+	useCreatePayPal,
 } from 'calypso/my-sites/checkout/composite-checkout/use-create-payment-methods';
 import Gridicon from 'calypso/components/gridicon';
 import { localizeUrl } from 'calypso/lib/i18n-utils';
@@ -387,6 +388,8 @@ function useAssignablePaymentMethods() {
 		activePayButtonText: translate( 'Save card' ),
 	} );
 
+	const payPalMethod = useCreatePayPal();
+
 	// getStoredCards always returns a new array, but we need a memoized version
 	// to pass to useCreateExistingCards, which has storedCards as a data dependency.
 	const rawStoredCards = useSelector( getStoredCards );
@@ -398,8 +401,8 @@ function useAssignablePaymentMethods() {
 	} );
 
 	const paymentMethods = useMemo(
-		() => [ ...existingCardMethods, stripeMethod ].filter( Boolean ),
-		[ stripeMethod, existingCardMethods ]
+		() => [ ...existingCardMethods, stripeMethod, payPalMethod ].filter( Boolean ),
+		[ stripeMethod, existingCardMethods, payPalMethod ]
 	);
 
 	return paymentMethods;
