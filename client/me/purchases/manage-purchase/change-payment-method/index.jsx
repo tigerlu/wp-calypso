@@ -248,6 +248,7 @@ function ChangePaymentMethodList( {
 			showSuccessMessage={ showSuccessMessage }
 			paymentMethods={ paymentMethods }
 			paymentProcessors={ {
+				paypal: assignPayPalProcessor,
 				'existing-card': ( data ) => assignExistingCardProcessor( purchase, data ),
 				card: ( data ) =>
 					assignNewCardProcessor(
@@ -288,6 +289,10 @@ async function assignExistingCardProcessor( purchase, { storedDetailsId } ) {
 	return wpcomAssignPaymentMethod( purchase.id, storedDetailsId ).then( ( data ) => {
 		return makeSuccessResponse( data );
 	} );
+}
+
+async function assignPayPalProcessor() {
+	// TODO: create a new paypal billing agreement
 }
 
 async function assignNewCardProcessor(
